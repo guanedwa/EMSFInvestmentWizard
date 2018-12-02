@@ -342,7 +342,7 @@ def plot_and_save(dates, arr_of_data, legends, filename):
 
 
 if __name__ == '__main__':
-	# main()
+	main()
 	# plot_and_save([1,2,3,4,5,6,7,8,9,10,11,12,13], [[1,2,3,4,5,6,7,8,9,10,11,12,13], [1,2,3,4,5,6,7,8,9,10,11,12,13]], "")
 	# print(validate_user_input({"weight":{"AAPL": 0.5, "SP500": 0.5}}, {"AAPL": 1}))
 	# print(validate_user_input({"weight":{"AAPL": 0.5, "SP500": 0.512}}, {"AAPL": 1}))
