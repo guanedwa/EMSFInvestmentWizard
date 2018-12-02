@@ -47,16 +47,16 @@ def main():
 		ticker_id_mapping = json.load(ticker_id_mapping_in)
 	with open(args.factor_data, "r") as factor_data_in:
 		factor_data = json.load(factor_data_in)
-	#results1 = main_flow(asset_data, "Back-testing", user_input, id_ticker_mapping, ticker_id_mapping, factor_data)
+	results1 = main_flow(asset_data, "Back-testing", user_input, id_ticker_mapping, ticker_id_mapping, factor_data)
 	#results2 = main_flow(asset_data, "Portfolio-domi", user_input, id_ticker_mapping, ticker_id_mapping, factor_data)
 	#with open("test_domi_result.json", "w") as results2_out:
 	#	json.dump(results2, results2_out, sort_keys = True, indent = 4)
 	# import pdb; pdb.set_trace()
-	results3 = main_flow(asset_data, "Portfolio-Construction", user_input, id_ticker_mapping, ticker_id_mapping, factor_data)
+	# results3 = main_flow(asset_data, "Portfolio-Construction", user_input, id_ticker_mapping, ticker_id_mapping, factor_data)
 	# with open("compound_test_user_input.json", "w") as compound_test_user_input_out:
 		# json.dump(results3["port"], compound_test_user_input_out, sort_keys = True, indent = 4)
 	# results4 = main_flow(asset_data, "Back-testing", results3["port"], id_ticker_mapping, ticker_id_mapping, factor_data)
-	# import pdb; pdb.set_trace()
+	import pdb; pdb.set_trace()
 
 
 def main_flow(asset_data, function, user_input, id_ticker_mapping, ticker_id_mapping, factor_data):
@@ -73,6 +73,8 @@ def main_flow(asset_data, function, user_input, id_ticker_mapping, ticker_id_map
 				end_date: yyyy-mm-dd
 			}
 	'''
+	if not validate_user_input(user_input, ticker_id_mapping):
+		return False
 	if function == "Back-testing":
 		if not ("start_date" in user_input and "end_date" in user_input and "weight" in user_input):
 			print("not sufficient information provided in the user input")
@@ -85,6 +87,18 @@ def main_flow(asset_data, function, user_input, id_ticker_mapping, ticker_id_map
 		return port_domi_procedure(asset_data, user_input, id_ticker_mapping, ticker_id_mapping, factor_data)
 	if function == "Portfolio-Construction":
 		return port_cont_procedure(asset_data, user_input, id_ticker_mapping, ticker_id_mapping, factor_data)
+
+
+def validate_user_input(user_input, ticker_id_mapping):
+	if "weight" in user_input:
+		su = 0
+		for ticker in user_input["weight"]:
+			if ticker not in ticker_id_mapping and ticker != "SP500" and ticker != "DJIA":
+				return False
+			su += user_input["weight"][ticker]
+		if abs(su - 1) > 0.01:
+			return False
+	return True
 
 
 def back_testing_procedure(asset_data, user_input, id_ticker_mapping, ticker_id_mapping):
@@ -328,5 +342,8 @@ def plot_and_save(dates, arr_of_data, legends, filename):
 
 
 if __name__ == '__main__':
-	main()
+	# main()
 	# plot_and_save([1,2,3,4,5,6,7,8,9,10,11,12,13], [[1,2,3,4,5,6,7,8,9,10,11,12,13], [1,2,3,4,5,6,7,8,9,10,11,12,13]], "")
+	# print(validate_user_input({"weight":{"AAPL": 0.5, "SP500": 0.5}}, {"AAPL": 1}))
+	# print(validate_user_input({"weight":{"AAPL": 0.5, "SP500": 0.512}}, {"AAPL": 1}))
+	# print(validate_user_input({"weight":{"APL": 0.5, "SP500": 0.512}}, {"AAPL": 1}))
